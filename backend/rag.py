@@ -6,10 +6,11 @@ from langchain_qdrant import QdrantVectorStore
 from langchain.prompts import ChatPromptTemplate
 from flask import Flask, jsonify, request
 from dotenv import load_dotenv
+from ChatOpenRouter import ChatOpenRouter
 import fastapi
 import pickle
 import os
-from ChatOpenRouter import ChatOpenRouter
+import requests
 
 load_dotenv()
 
@@ -61,6 +62,8 @@ db = QdrantVectorStore.from_documents(
     api_key=os.getenv('QDRANT_API_KEY'),
 )
 
+print("Started server")
+
 @app.route('/get', methods=['GET'])
 def get_query():
     query = request.args.get('query')
@@ -68,7 +71,10 @@ def get_query():
     context_text = "\n\n---\n\n".join([doc.page_content for doc, _ in found_docs])
     prompt_template = ChatPromptTemplate.from_template(PROMPT_TEMPLATE)
     prompt = prompt_template.format(context=context_text, question=query)
-    model = ChatOpenRouter(model_name="meta-llama/llama-3.1-8b-instruct")
+    try:
+        model = ChatOpenRouter(model_name="meta-llama/llama-3.1-8b-instruct:free")
+    except:
+        model = ChatOpenRouter(model_name="meta-llama/llama-3.1-8b-instruct")
     response_text = model.invoke(prompt)
     return jsonify({"response": fastapi.encoders.jsonable_encoder(response_text), 'document': fastapi.encoders.jsonable_encoder(found_docs[0])})
 

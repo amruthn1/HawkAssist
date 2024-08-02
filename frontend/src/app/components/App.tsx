@@ -59,7 +59,6 @@ export default function App() {
         setIsLoading(true)
         setResponse(null)
         const result = await runRAG(query)
-        console.log(result)
         setIsLoading(false)
         setResponse(result)
     }
