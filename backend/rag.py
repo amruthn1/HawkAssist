@@ -73,7 +73,7 @@ def get_query():
     prompt = prompt_template.format(context=context_text, question=query)
     try:
         model = ChatOpenRouter(model_name="meta-llama/llama-3.1-8b-instruct:free")
-    except:
+    finally:
         model = ChatOpenRouter(model_name="meta-llama/llama-3.1-8b-instruct")
     response_text = model.invoke(prompt)
     return jsonify({"response": fastapi.encoders.jsonable_encoder(response_text), 'document': fastapi.encoders.jsonable_encoder(found_docs[0])})
