@@ -1,14 +1,22 @@
 "use server"
 
 import { apiUrl } from "@/app/config"
+import { getServerSession } from "next-auth"
+import { redirect } from "next/navigation"
 
 export async function runRAG(query: string) {
 
-    let response: any;
+    const session = await getServerSession()
 
-    await fetch(apiUrl + "/get?query=" + encodeURIComponent(query.toString()), {method: "GET"}).then((res) => {
-        response = res.json()
-    })
+    if (!session || !session.user) {
+        redirect("/api/auth/signin")
+    } else {
+        let response: any;
 
-    return response
+        await fetch(apiUrl + "/get?query=" + encodeURIComponent(query.toString()), { method: "GET" }).then((res) => {
+            response = res.json()
+        })
+
+        return response
+    }
 }

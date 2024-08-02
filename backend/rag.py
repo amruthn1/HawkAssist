@@ -68,7 +68,7 @@ def get_query():
     context_text = "\n\n---\n\n".join([doc.page_content for doc, _ in found_docs])
     prompt_template = ChatPromptTemplate.from_template(PROMPT_TEMPLATE)
     prompt = prompt_template.format(context=context_text, question=query)
-    model = ChatOpenRouter(model_name="meta-llama/llama-3.1-8b-instruct:free")
+    model = ChatOpenRouter(model_name="meta-llama/llama-3.1-8b-instruct")
     response_text = model.invoke(prompt)
     return jsonify({"response": fastapi.encoders.jsonable_encoder(response_text), 'document': fastapi.encoders.jsonable_encoder(found_docs[0])})
 

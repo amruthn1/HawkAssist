@@ -7,9 +7,6 @@ const nextConfig = {
         "*": [
             "node_modules/canvas/build",
         ],
-      },
-      serverActions: {
-        bodySizeLimit: '10mb',
       }
     },
     webpack: (config) => {
